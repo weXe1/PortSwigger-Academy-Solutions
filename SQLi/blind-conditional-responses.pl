@@ -30,7 +30,6 @@ our(
 );
 
 our $query = "(select password from users where username='administrator')";
-# our $query = "(select username from users where username='administrator')";
 
 GetOptions(
     'u|url=s'           => \$url,
