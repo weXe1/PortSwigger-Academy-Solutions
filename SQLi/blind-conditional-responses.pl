@@ -49,15 +49,9 @@ our $ua = LWP::UserAgent->new(
 );
 $ua->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0x00);
 
-# WARNING: install LWP::Protocol::connect if you want to use HTTPS proxy
-# https://stackoverflow.com/questions/12116244/https-proxy-and-lwpuseragent/17787133#17787133
 if ($proxy) {
-    if ($proxy =~ /^https:\/\//) {
-        $proxy =~ s/^https/connect/;
-        $ua->proxy('https' => $proxy);
-    } else {
-        $ua->proxy('http' => $proxy);
-    }
+    $ua->proxy('https' => $proxy);
+    $ua->proxy('http' => $proxy);
 }
 
 print colored("[*] SQL injection test... ", "cyan");

