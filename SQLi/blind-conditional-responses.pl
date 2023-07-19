@@ -1,4 +1,4 @@
-#!usr/bin/env perl
+#!/usr/bin/env perl
 #
 #   Author: <wexe1@protonmail.com>
 #   License: MIT
