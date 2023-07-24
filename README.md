@@ -18,3 +18,4 @@ Scripts and exploits to help solve lab assignments at PortSwigger Web Security A
 
 - [Lab: CSRF where token validation depends on token being present](CSRF/csrf_is_token_present.html)
 - [Lab: CSRF where token is not tied to user session](CSRF/csrf_is_token_present.html)
+- [Lab: CSRF where token is tied to non-session cookie](CSRF/csrf_tied_cookie.html)
