@@ -1,6 +1,6 @@
-# PortSwigger-Academy-Scripts
+# PortSwigger Web Security Academy Solutions
 
-Scripts to help with solving labs on PortSwigger Web Security Academy
+Scripts and exploits to help solve lab assignments at PortSwigger Web Security Academy
 
 ## SQLi
 
@@ -13,3 +13,8 @@ Scripts to help with solving labs on PortSwigger Web Security Academy
 - [Lab: Blind SQL injection with conditional responses](SQLi/blind-conditional-responses.pl)
 - [Lab: Blind SQL injection with conditional errors](SQLi/blind-conditional-errors.pl)
 - [Lab: Blind SQL injection with time delays and information retrieval](SQLi/blind-time-delays.pl)
+
+## CSRF
+
+- [Lab: CSRF where token validation depends on token being present](CSRF/csrf_is_token_present.html)
+- [Lab: CSRF where token is not tied to user session](CSRF/csrf_is_token_present.html)
