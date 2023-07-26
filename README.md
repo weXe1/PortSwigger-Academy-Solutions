@@ -22,3 +22,7 @@ Scripts and exploits to help solve lab assignments at PortSwigger Web Security A
 - [Lab: CSRF where token is duplicated in cookie](CSRF/csrf_duplicated_in_cookie.html)
 - [Lab: SameSite Lax bypass via method override](CSRF/csrf_lax_method_override.html)
 - [Lab: SameSite Strict bypass via client-side redirect](CSRF/csrf_strict_redirects.html)
+
+## WebSockets
+
+- [Lab: Cross-site WebSocket hijacking](WebSockets/cross_site_websocket_hijacking.html)

