@@ -23,6 +23,7 @@ Scripts and exploits to help solve lab assignments at PortSwigger Web Security A
 - [Lab: SameSite Lax bypass via method override](CSRF/csrf_lax_method_override.html)
 - [Lab: SameSite Strict bypass via client-side redirect](CSRF/csrf_strict_redirects.html)
 - [Lab: SameSite Lax bypass via cookie refresh](CSRF/csrf_cookie_refresh.html)
+- [Lab: CSRF where Referer validation depends on header being present](CSRF/csrf_referer_present.html)
 
 ## WebSockets
 

