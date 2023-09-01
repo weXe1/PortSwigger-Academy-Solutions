@@ -17,6 +17,7 @@ Scripts and exploits to help solve lab assignments at PortSwigger Web Security A
 ## Authentication
 
 - [Lab: Broken brute-force protection, IP block](Authentication/broken-brute-force-protection.pl)
+- [Lab: Username enumeration via account lock](Authentication/account-lock-brute-password.pl)
 
 ## CSRF
 
