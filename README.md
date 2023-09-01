@@ -14,6 +14,10 @@ Scripts and exploits to help solve lab assignments at PortSwigger Web Security A
 - [Lab: Blind SQL injection with conditional errors](SQLi/blind-conditional-errors.pl)
 - [Lab: Blind SQL injection with time delays and information retrieval](SQLi/blind-time-delays.pl)
 
+## Authentication
+
+- [Lab: Broken brute-force protection, IP block](Authentication/broken-brute-force-protection.pl)
+
 ## CSRF
 
 - [Lab: CSRF where token validation depends on token being present](CSRF/csrf_is_token_present.html)
