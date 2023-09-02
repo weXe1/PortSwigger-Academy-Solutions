@@ -57,7 +57,7 @@ open(my $fh, $wordlist) or die colored("[!!] Cannot open file '$wordlist': $!\n"
 
 say colored("[!] This is just brute-forcing a password - remember to get a username candidate first", "magenta");
 
-say colored("[*] Obtaining password length for user '$username', this may take a while...", "cyan");
+say colored("[*] Obtaining password for user '$username', this may take a while...", "cyan");
 
 while (my $pass = <$fh>) {
     chomp($pass);

