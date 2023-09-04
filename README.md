@@ -2,26 +2,34 @@
 
 Scripts and exploits to help solve lab assignments at PortSwigger Web Security Academy
 
-## SQLi
+## Server-side topics
 
-### UNION based
+### SQLi
+
+#### UNION based
 
 - [Finding amount of columns in table](SQLi/column-number-finder.pl)
 
-### Blind
+#### Blind
 
 - [Lab: Blind SQL injection with conditional responses](SQLi/blind-conditional-responses.pl)
 - [Lab: Blind SQL injection with conditional errors](SQLi/blind-conditional-errors.pl)
 - [Lab: Blind SQL injection with time delays and information retrieval](SQLi/blind-time-delays.pl)
 
-## Authentication
+### Authentication
 
 - [Lab: Broken brute-force protection, IP block](Authentication/broken-brute-force-protection.pl)
 - [Lab: Username enumeration via account lock](Authentication/account-lock-brute-password.pl)
 - [Lab: 2FA broken logic](Authentication/2fa-broken-logic.pl)
 - [Lab: Brute-forcing a stay-logged-in cookie](Authentication/stay-logged-in-cookie.pl)
 
-## CSRF
+### Business logic vulnerabilities
+
+- [Lab: Infinite money logic flaw](Business_logic_vulnerabilities/infinite-money.pl)
+
+## Client-side topics
+
+### CSRF
 
 - [Lab: CSRF where token validation depends on token being present](CSRF/csrf_is_token_present.html)
 - [Lab: CSRF where token is not tied to user session](CSRF/csrf_is_token_present.html)
@@ -33,6 +41,6 @@ Scripts and exploits to help solve lab assignments at PortSwigger Web Security A
 - [Lab: CSRF where Referer validation depends on header being present](CSRF/csrf_referer_present.html)
 - [Lab: CSRF with broken Referer validation](CSRF/csrf_referer_broken.html)
 
-## WebSockets
+### WebSockets
 
 - [Lab: Cross-site WebSocket hijacking](WebSockets/cross_site_websocket_hijacking.html)
