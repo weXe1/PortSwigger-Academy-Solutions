@@ -27,6 +27,12 @@ Scripts and exploits to help solve lab assignments at PortSwigger Web Security A
 
 - [Lab: Infinite money logic flaw](Business_logic_vulnerabilities/infinite-money.pl)
 
+### File upload vulnerabilities
+
+- [Lab: Remote code execution via web shell upload](File_upload_vulnerabilities/rce_webshell.php)
+- [Lab: Web shell upload via extension blacklist bypass](File_upload_vulnerabilities/.htaccess)
+- [Lab: Remote code execution via polyglot web shell upload](File_upload_vulnerabilities/exploit.php)
+
 ## Client-side topics
 
 ### CSRF
