@@ -33,6 +33,10 @@ Scripts and exploits to help solve lab assignments at PortSwigger Web Security A
 - [Lab: Web shell upload via extension blacklist bypass](File_upload_vulnerabilities/.htaccess)
 - [Lab: Remote code execution via polyglot web shell upload](File_upload_vulnerabilities/exploit.php)
 
+### SSRF
+
+- [Lab: Basic SSRF against another back-end system](SSRF/basic-ssrf-another-system.pl)
+
 ## Client-side topics
 
 ### CSRF
